@@ -56,15 +56,19 @@ void setup() {
     return;
   }
 
-  // Initialize rtc variable via function
+  // Initialize rtc variable via function -----------------------
   rtcSetup();
   getTimesetting();
 
+  //  Connecting to wifi -----------------------
   ssid = "Puzzle24";  // Enter SSID here
   password = "gzcmb94463";  //Enter Password here
   wificonnect(ssid, password);
 
+  //  Setting up control allow origin on server -----------------------
   DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+
+  //  Creating handle request from client -----------------------
   server.on("/", HTTP_ANY, handleRequest);
   server.on("/getdata", HTTP_POST, getData);
   server.on("/post", HTTP_POST,[](AsyncWebServerRequest * request){},NULL,[](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
