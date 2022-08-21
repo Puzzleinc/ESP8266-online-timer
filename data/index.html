@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        <h1>Hello From Esp8266</h1>
+        <h3>This text generated from PFIFSS file in esp8266 EEPROM</h3>
+        <main>
+            <span id="sensor">Nama sensor:</span><br/>
+            Jam: <span id="jam"></span><br/>
+            Menit: <span id="menit"></span><br/>
+
+            <span id="setting">Setting timer:</span><br/>
+            Jam nyala: <span id="jamnyala"></span><br/>
+            Jam mati: <span id="jammati"></span><br/>
+        </main>
+    </body>
+
+    <script>
+        // Create an XMLHttpRequest object
+        const xhttp = new XMLHttpRequest();
+
+        // Define a callback function
+        xhttp.onload = function() {
+            const obj = JSON.parse(this.responseText);
+            document.getElementById("jam").innerHTML = obj.sensorrtc[0];
+            document.getElementById("menit").innerHTML = obj.sensorrtc[1];
+            document.getElementById("jamnyala").innerHTML = obj.looptime[0];
+            document.getElementById("jammati").innerHTML = obj.looptime[1];
+        }
+
+        // Send a request
+        xhttp.open("POST", "/getdata");
+        xhttp.send();
+    </script>
+</html>
