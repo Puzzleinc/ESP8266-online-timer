@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "rtc.h"
+
 // Initialize rtc variable
 RTC_DS3231 rtc;
 
@@ -13,6 +14,7 @@ void rtcSetup() {
 }
 
 void rtcFunction() {
+    // Ouuput data to the serial port for debug -----------------------
     DateTime now = rtc.now();
 
     digitalWrite(LED_BUILTIN, 0);

@@ -1,19 +1,13 @@
 #include <Arduino.h>
+#include <Wire.h>
 
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-
-#include <ArduinoJson.h>
 #include <AsyncJson.h>
-
-#include <Wire.h>
-#include <LittleFS.h>
 
 #include "wificonnect.h"
 #include "rtc.h"
-
-int jamawal;
-int jamakhir;
+#include "gettimesetting.h"
 
 // Define millis variable
 const unsigned long eventInterval = 2000;
@@ -36,7 +30,6 @@ AsyncWebServer server(80);
 void handleRequest(AsyncWebServerRequest *request);
 void getData(AsyncWebServerRequest *request);
 void onFailed(AsyncWebServerRequest *request);
-void getTimesetting();
 
 void setup() {
   // Initialize Serial port and I2C pin -----------------------
@@ -75,7 +68,7 @@ void setup() {
 
     String json = "";
     for (size_t i = 0; i < len; i++) {
-      json += (char)data[i];
+      json += (char)data[i]; //binary strean to char array
     }
 
     File this_file = LittleFS.open("/config.json", "w");
@@ -96,7 +89,8 @@ void setup() {
     request->send(200, "text/plain", writedone);
     this_file.close();
     getTimesetting();
-    delay(1000);
+
+    delay(2000);
     //ESP.restart(); //ESP.reset();    
   });
 
@@ -154,32 +148,4 @@ void getData(AsyncWebServerRequest *request){
 void onFailed(AsyncWebServerRequest *request){
   //Handle Unknown Request
   request->send(404, "text/plain", "Failed to reach file");
-}
-
-void getTimesetting() {
-  // Get data from SPIFFS and send it to global variable
-  String result = "";
-  File file = LittleFS.open("/config.json", "r");
-
-  if(!file){
-    Serial.println("Failed to open file for reading");
-    return;
-  }
-
-  while (file.available()) {
-      result += (char)file.read();
-  }
-  file.close();
-
-  StaticJsonDocument<96> doc;
-  DeserializationError error = deserializeJson(doc, result);
-
-  if (error) {
-    Serial.print(F("deserializeJson() failed: "));
-    Serial.println(error.f_str());
-    return;
-  }
-
-  jamawal = doc["jamawal"]; // 7
-  jamakhir = doc["jamakhir"]; // 17
 }
